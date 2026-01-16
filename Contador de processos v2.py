@@ -156,10 +156,35 @@ if not df.empty:
     st.dataframe(df_final[["ID", "NÚMERO", "ASSUNTO", "PROCESSO SEI", "STATUS", "PUBLICADA?", "RESPONSÁVEL"]], use_container_width=True, hide_index=True)
 
 # ================= ADMIN =================
+st.divider()
 st.sidebar.header("⚙️ Administração")
-with st.sidebar.expander("🗑️ Limpar Base"):
-    senha_adm = st.text_input("Senha", type="password")
-    if st.button("Zerar Tudo"):
-        if senha_adm == SENHA_ADMIN:
-            pd.DataFrame(columns=col_obrig).to_csv(ARQUIVO, index=False)
-            st.rerun()
+
+with st.sidebar.expander("🗑️ Excluir Dados"):
+    tipo_exclusao = st.radio("O que deseja excluir?", ["Uma Linha", "Base Inteira"])
+    
+    if tipo_exclusao == "Uma Linha":
+        id_para_excluir = st.number_input("Digite o ID da Nota", min_value=1, step=1)
+        confirma_um = st.checkbox("Confirmo a exclusão desta linha.")
+        senha_um = st.text_input("Senha Admin", type="password", key="senha_um")
+        
+        if st.button("Excluir Linha"):
+            if senha_um == SENHA_ADMIN and confirma_um:
+                df = df[df["id_nota"] != id_para_excluir]
+                df.to_csv(ARQUIVO, index=False)
+                st.success(f"ID {id_para_excluir} removido.")
+                st.rerun()
+            else:
+                st.error("Senha incorreta ou falta de confirmação.")
+
+    else:
+        confirma_tudo = st.checkbox("⚠️ CONFIRMO APAGAR TODA A BASE.")
+        senha_tudo = st.text_input("Senha Admin", type="password", key="senha_tudo")
+        
+        if st.button("Zerar Sistema"):
+            if senha_tudo == SENHA_ADMIN and confirma_tudo:
+                df = pd.DataFrame(columns=df.columns)
+                df.to_csv(ARQUIVO, index=False)
+                st.success("Base resetada!")
+                st.rerun()
+            else:
+                st.error("Ação negada.")
