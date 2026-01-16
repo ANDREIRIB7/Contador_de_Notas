@@ -58,7 +58,7 @@ else:
     df["ano"] = pd.to_numeric(df["ano"], errors="coerce")
 
 # ================= INTERFACE VISUAL =================
-st.title("🏛️ Sistema de Gestão de Notas Técnicas")
+st.title("🏛️ Sistema de Gestão de Notas Técnicas - Coplan")
 prox_idx, prox_str = gerar_numero_nota(df)
 
 st.metric(label="🔢 Próximo Número de Série", value=prox_str)
@@ -188,3 +188,4 @@ with st.sidebar.expander("🗑️ Excluir Dados"):
                 st.rerun()
             else:
                 st.error("Ação negada.")
+
